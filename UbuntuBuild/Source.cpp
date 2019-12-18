@@ -19,6 +19,15 @@
 #define KEY_R 82
 #define KEY_S 83
 #define KEY_W 87
+#define KEY_I 73
+#define KEY_J 74
+#define KEY_K 75
+#define KEY_L 76
+#define KEY_U 85
+#define KEY_O 79
+
+bool isPossessingMerry(); 
+bool isPossessingCars();
 
 //Define initial size of the window
 GLint width = 800;
@@ -26,13 +35,22 @@ GLint height = 600;
 
 //Define Colors
 GLfloat yellow[] = { 1.0, 1.0, 0.0, 1.0 };
+GLfloat yellow_t[] = { 1.0, 1.0, 0.0, 0.7 };
 GLfloat green[] = { 0.0, 1.0, 0.0, 1.0 };
+GLfloat green_t[] = { 0.0, 1.0, 0.0, 0.7 };
 GLfloat darkGreen[] = { 0.0, 0.3, 0.0, 1.0 };
+GLfloat darkGreen_t[] = { 0.0, 0.3, 0.0, 0.7 };
 GLfloat brown[] = { 0.5, 0.35, 0.05, 1.0 };
+GLfloat brown_t[] = { 0.5, 0.35, 0.05, 0.7 };
 GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat white_t[] = { 1.0, 1.0, 1.0, 0.7 };
 GLfloat blue[] = { 0.0, 0.0, 1.0, 1.0 };
+GLfloat blue_t[] = { 0.0, 0.0, 1.0, 0.7 };
 GLfloat red[] = { 1.0, 0.0, 0.0, 1.0 };
+GLfloat red_t[] = { 1.0, 0.0, 0.0, 0.7 };
 GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
+GLfloat black_t[] = { 0.0, 0.0, 0.0, 0.7 }; 
+GLfloat ghost[] = { 0.5, 0.5, 0.5, 0.5 };
 
 // Variables for rotation.
 GLfloat treeRotate = 0;
@@ -57,6 +75,11 @@ GLfloat carDirection2 = 0;
 GLfloat carDirection3 = 0;
 GLfloat carDirection4 = 0;
 
+//Variables for Ghost
+GLfloat ghost_x = 0.0f; 
+GLfloat ghost_y = 5.0f; 
+GLfloat ghost_z = 0.0f; 
+
 // Variable for zoom in/out.
 GLfloat zoom_distance = 0;
 
@@ -71,7 +94,27 @@ void reshape(GLint, GLint);
 GLvoid keyboard(unsigned char, int, int);
 
 
+bool isPossessingMerry() {
 
+	if ((ghost_x >= 0.0 && ghost_x <= 6.0) && (ghost_y >= 0.0 && ghost_y <= 5.5)
+		&& (ghost_z >= -7.5 && ghost_z <= -2.5)) {
+		return true;
+	}
+	else
+		return false; 
+	
+}
+
+bool isPossessingCars() {
+
+	if ((ghost_x >= -7.0 && ghost_x <= 4.0) && (ghost_y >= 0.0 && ghost_y <= 3.0)
+		&& (ghost_z >= 3.0 && ghost_z <= 7.0)) {
+		return true;
+	}
+	else
+		return false;
+
+}
 
 //------------------------------------------------------------------------ main
 int main(int argc, char** argv) {
@@ -176,10 +219,10 @@ void display() {
 	glNormal3f(0, 1, 0); 
 	glBegin(GL_QUADS);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
-		glVertex3f(10, 0, -10);
-		glVertex3f(-10, 0, -10);
-		glVertex3f(-10, 0, 10);
-		glVertex3f(10, 0, 10);
+		glVertex3f(20, 0, -20);
+		glVertex3f(-20, 0, -20);
+		glVertex3f(-20, 0, 20);
+		glVertex3f(20, 0, 20);
 	glEnd();
 	glPopMatrix();						//1
 	
@@ -187,7 +230,7 @@ void display() {
 //--------------Merry-Go-Round--------------------
 
 	//Top of Merry-Go-Round
-	
+
 	glPushMatrix();						//2
 	glTranslatef(3.0f, 0.0f, -5.0f);
 	glPushMatrix();						//3
@@ -196,63 +239,120 @@ void display() {
 	glBegin(GL_TRIANGLES);
 		//Front
 		glNormal3f(0, 1, 1);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+		if (isPossessingMerry()) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, red_t);
+		}
+		else {
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+		}
 		glVertex3f(0.0f, 1.5f, 0.0f);
 		glVertex3f(-2.5f, -1.5f, 2.5f);
 		glVertex3f(2.5f, -1.5f, 2.5f);
 		//right
 		glNormal3f(1, 1, 0);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+		if (isPossessingMerry()) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, white_t);
+		}
+		else {
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+		}
 		glVertex3f(0.0f, 1.5f, 0.0f);
 		glVertex3f(2.5f, -1.5f, 2.5f);
 		glVertex3f(2.5f, -1.5f, -2.5f);
 		//back
 		glNormal3f(0, 1, -1);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+		if (isPossessingMerry()) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, red_t);
+		}
+		else {
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+		}
 		glVertex3f(0.0f, 1.5f, 0.0f);
 		glVertex3f(2.5f, -1.5f, -2.5f);
 		glVertex3f(-2.5f, -1.5f, -2.5f);
 		//left
 		glNormal3f(-1, 1, 0);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+		if (isPossessingMerry()) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, white_t);
+		}
+		else {
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+		}
 		glVertex3f(0.0f, 1.5f, 0.0f);
 		glVertex3f(-2.5f, -1.5f, -2.5f);
 		glVertex3f(-2.5f, -1.5f, 2.5f);
 	glEnd(); 
+	glDisable(GL_BLEND); 
 	glPopMatrix();						//2
 
 	//Base of Merry-Go-Round
 	//Cylinder
 	GLUquadricObj *quadratic = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
+	if (isPossessingMerry()) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(0.0f, .5f, -0.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	//void gluCylinder(	GLUquadric* quad, GLdouble base, GLdouble top, GLdouble height, GLint slices,GLint stacks);
 	gluCylinder(quadratic, 4.0f, 4.0f, 0.5f, 8, 8);
+	glDisable(GL_BLEND); 
 	glPopMatrix();						//2
 
 	//Disc on top
 	GLUquadricObj *discQuad = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
+	if (isPossessingMerry()) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, brown);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(0.0f, .5f, 0.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	gluDisk(discQuad, 0.0f, 4.0f, 8, 8);
+	glDisable(GL_BLEND); 
 	glPopMatrix();						//2
 
 	//Horse poles
 	GLUquadricObj *frontRight = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	if (isPossessingMerry()) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(2.0f, 4.0f, -2.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	gluCylinder(frontRight, 0.1f, 0.1f, 4.0f, 8, 8);
 	glPushMatrix();						//4
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+	}
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); 
 	glTranslatef(0.0f, -2.0f, 0.0f); 
 	glTranslatef(0.0f, sinWave, 0.0f);
@@ -262,14 +362,24 @@ void display() {
 
 	GLUquadricObj *quadratic1 = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(2.0f, 4.0f, 2.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	//void gluCylinder(	GLUquadric* quad, GLdouble base, GLdouble top, GLdouble height, GLint slices,GLint stacks);
 	gluCylinder(quadratic1, 0.1f, 0.1f, 4.0f, 8, 8);
 	glPushMatrix();						//4
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, green_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
+	}
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	glTranslatef(0.0f, -2.0f, 0.0f);
 	glTranslatef(0.0f, cosWave, 0.0f);
@@ -280,14 +390,24 @@ void display() {
 
 	GLUquadricObj *quadratic2 = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(-2.0f, 4.0f, -2.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	//void gluCylinder(	GLUquadric* quad, GLdouble base, GLdouble top, GLdouble height, GLint slices,GLint stacks);
 	gluCylinder(quadratic2, 0.1f, 0.1f, 4.0f, 8, 8);
 	glPushMatrix();						//4
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, red_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+	}
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	glTranslatef(0.0f, -2.0f, 0.0f);
 	glTranslatef(0.0f, cosWave, 0.0f);
@@ -297,18 +417,29 @@ void display() {
 
 	GLUquadricObj *quadratic3 = gluNewQuadric();
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	}
 	glRotatef(treeRotate, 0.0f, 1.0f, 0.0f);
 	glTranslatef(-2.0f, 4.0f, 2.0f);
 	glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 	//void gluCylinder(	GLUquadric* quad, GLdouble base, GLdouble top, GLdouble height, GLint slices,GLint stacks);
 	gluCylinder(quadratic3, 0.1f, 0.1f, 4.0f, 8, 8);
 	glPushMatrix();						//4
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+	if (isPossessingMerry()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, white_t);
+	}
+	else {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+	}
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	glTranslatef(0.0f, -2.0f, 0.0f);
 	glTranslatef(0.0f, sinWave, 0.0f);
 	glutSolidSphere(0.5f, 8, 8);
+	glDisable(GL_BLEND);
 	glPopMatrix();						//3
 	glPopMatrix();						//2
 	glPopMatrix();						//1
@@ -318,31 +449,53 @@ void display() {
 
 	//body of car
 	glPushMatrix();						//2
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+	if (isPossessingCars()) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow_t); 
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 	glTranslatef(car1x, 1.0f, car1z);
 	glRotatef(carDirection, 0.0f, 1.0f, 0.0f); 
 	glutSolidTeapot(1.0f);
 	//Wheels of car
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black); 
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black); 
 	glTranslatef(0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8); 
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
@@ -350,31 +503,51 @@ void display() {
 	glPopMatrix();						//1
 	//body of car
 	glPushMatrix();						//2
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
 	glTranslatef(car2x, 1.0f, car2z);
 	glRotatef(carDirection2, 0.0f, 1.0f, 0.0f);
 	glutSolidTeapot(1.0f);
 	//Wheels of car
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
@@ -382,31 +555,51 @@ void display() {
 	glPopMatrix();						//1
 	//body of car
 	glPushMatrix();						//2
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, white_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 	glTranslatef(car3x, 1.0f, car3z);
 	glRotatef(carDirection3, 0.0f, 1.0f, 0.0f);
 	glutSolidTeapot(1.0f);
 	//Wheels of car
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
@@ -414,34 +607,86 @@ void display() {
 	glPopMatrix();						//1
 		//body of car
 	glPushMatrix();						//2
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, red_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
 	glTranslatef(car4x, 1.0f, car4z);
 	glRotatef(carDirection4, 0.0f, 1.0f, 0.0f);
 	glutSolidTeapot(1.0f);
 	//Wheels of car
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, 0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
 	glPopMatrix();						//2
 	glPushMatrix();						//3
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
+	if (isPossessingCars()) {
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black_t);
+	}
+	else
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
 	glTranslatef(-0.7f, -0.7f, -0.8f);
 	glRotatef(treeRotate, 0.0f, 0.0f, 1.0f);
 	glutSolidTorus(0.15f, 0.3f, 8, 8);
+	glPopMatrix();						//2
+	glDisable(GL_BLEND); 
+	glPopMatrix();						//1
+
+	// ----------Ghost!------------
+
+	glPushMatrix();						//2
+	glEnable(GL_BLEND); 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE); 
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, ghost);
+	glTranslatef(ghost_x, ghost_y, ghost_z); 
+	glutSolidSphere(0.5f, 8, 8);
+	glPushMatrix();						//3
+	GLUquadricObj *ghostQuad = gluNewQuadric();
+	glRotatef(90.0f, 1.0, 0.0, 0.0); 
+	gluCylinder(ghostQuad, 0.5, 1.0f, 2.0f, 8, 8);
+	glDisable(GL_BLEND);
+	glPopMatrix();						//2
+	glPushMatrix();						//3
+	glTranslatef(-0.25f, 0.1f, 0.4f);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, black);
+	glutSolidSphere(0.1f, 8, 8); 
+	glPopMatrix();						//2
+	glPushMatrix();						//3
+	glTranslatef(0.25f, 0.1f, 0.4f);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, black);
+	glutSolidSphere(0.1f, 8, 8);
+	glPopMatrix();						//2
+	glPushMatrix();						//3
+	glTranslatef(0.0f, -0.1f, 0.5f);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, black);
+	glutSolidSphere(0.1f, 8, 8);
 	glPopMatrix();						//2
 	glPopMatrix();						//1
 
@@ -596,6 +841,37 @@ GLvoid keyboard(unsigned char key, int x, int y)
 		pan_angle = 0.0f;
 		break;
 
+	case KEY_I:
+	case KEY_I + 32:
+		ghost_z -= 0.5f;
+		break;
+
+	case KEY_J:
+	case KEY_J + 32:
+		ghost_x -= 0.5f;
+		break;
+
+	case KEY_K:
+	case KEY_K + 32:
+		ghost_z += 0.5f;
+		break;
+
+	case KEY_L:
+	case KEY_L + 32:
+		ghost_x += 0.5f;
+		break;
+
+	case KEY_U:
+	case KEY_U + 32:
+		ghost_y -= 0.5f;
+		break;
+
+	case KEY_O:
+	case KEY_O + 32:
+		ghost_y += 0.5f;
+		break;
+	
+
 		// Print Help (instruction) on console
 	case KEY_H:		 // H
 	case KEY_H + 32: // h
@@ -605,6 +881,12 @@ GLvoid keyboard(unsigned char key, int x, int y)
 		printf("Key W: Zoom in \n");
 		printf("Key S: Zoom out \n");
 		printf("Key R: Reset \n");
+		printf("Key I: Ghost Forward\n");
+		printf("Key J: Ghost Left\n");
+		printf("Key K: Ghost Backward\n");
+		printf("Key L: Ghost Right\n");
+		printf("Key U: Ghost Down\n");
+		printf("Key O: Ghost Up\n"); 
 		break;
 
 	}
